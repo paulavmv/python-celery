@@ -1,0 +1,4 @@
+flask==1.1.2
+celery==5.0.5
+redis==3.5.3
+uwsgi==2.0.19.1

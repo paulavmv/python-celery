@@ -1,0 +1,30 @@
+version: "3.4"
+services:
+  web:
+    container_name: main-app
+    build:
+      context: "."
+    command: uwsgi --ini app/src/wsgi.ini
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - WSGI_HOST=0.0.0.0
+      - PORT=5000
+
+  redis:
+    image: "redis:6.0.5-buster"
+    volumes:
+      - "redis:/data"
+
+  worker:
+    build:
+      context: "."
+    command: celery -A app.src.worker worker -l info
+    depends_on:
+      - "redis"
+    environment:
+      - REDIS_URL=redis://redis:6379
+
+volumes:
+  redis: {}
